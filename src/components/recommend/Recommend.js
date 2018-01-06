@@ -1,7 +1,9 @@
 import React , { Component } from "react";
-import  Swiper from "swiper";
-import {getCarousel} from "@/api/recommend";
+import Swiper from "swiper";
+import {getCarousel, getNewAlbum} from "@/api/recommend";
 import {CODE_SUCCESS} from "@/api/config";
+import * as AlbumModel from "@/model/album";
+import Scroll from "@/common/scroll/Scroll";
 import './recommend.styl';
 import "swiper/dist/css/swiper.css";
 
@@ -10,7 +12,9 @@ export default class Recommend extends Component{
 	constructor(props){
 		super(props);
 		this.state = {
-			slideList: []
+			slideList: [],
+			newAlbums: [],
+			refreshScroll: false
 		};
 	}
 
@@ -37,7 +41,33 @@ export default class Recommend extends Component{
 				}
 			}
 		});
-	};
+
+
+
+    //获取最新专辑
+		getNewAlbum().then((res) => {
+			//console.log("获取最新专辑：");
+			if (res) {
+				//console.log(res);
+				if (res.code === CODE_SUCCESS) {
+					//根据发布时间降序排列
+					let albumList = res.albumlib.data.list;
+					albumList.sort((a, b) => {
+						return new Date(b.public_time).getTime() - new Date(a.public_time).getTime();
+					});
+					this.setState({
+						loading: false,
+						newAlbums: albumList
+					}, () => {
+						//刷新scroll
+						this.setState({refreshScroll:true});
+					});
+				}
+			}
+		});
+
+	}
+
 
 //点击跳转
 	toLink(linkUrl){
@@ -47,8 +77,36 @@ export default class Recommend extends Component{
 	}
 
 	render(){
+		let albums = this.state.newAlbums.map(item => {
+			let album = AlbumModel.createAlbumByList(item);
+			return (
+				<div className="album-wrapper" key={album.mId}>
+					<div className="left">
+						<img src={album.img} width="100%" height="100%" alt={album.name} />
+					</div>
+					<div className="right">
+						<div className="album-name">
+							{album.name}
+						</div>
+						<div className="singer-name">
+							{album.singer}
+						</div>
+						<div className="public-time">
+							{album.publicTime}
+						</div>
+					</div>
+				</div>
+			);
+		});
+
+
+
+
 		return (
+		<Scroll refresh={this.state.refreshScroll}>
+			
 			<div className="music-recommend">
+				
 				<div className="slider-container">
 					<div className="swiper-wrapper">
 						{
@@ -65,8 +123,16 @@ export default class Recommend extends Component{
 					</div>
 					<div className="swiper-pagination"></div>
 				</div>
-				<div></div>
+				<div className="album-container">
+					<h1 className="title">最新专辑</h1>
+					<div className="album-list">
+						{albums}
+					</div>
+				</div>
+	
 			</div>
+		</Scroll>
+
 		);
 	}
 }

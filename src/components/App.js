@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-//导入路相关组件
+//导入路由相关组件
 import {BrowserRouter as Router, Route, Switch, Redirect, NavLink} from "react-router-dom";
 
 import Recommend from './recommend/Recommend';
