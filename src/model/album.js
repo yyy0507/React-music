@@ -33,3 +33,17 @@ function filterSinger(singers) {
 	});
 	return singerArray.join("/");
 }
+
+/**
+ *  通过专辑详情数据创建专辑对象函数
+ */
+ export function createAlbumByDetail(data){
+ 	return new Album(
+ 		data.id,
+ 		data.mid,
+ 		data.name,
+ 		`http://y.gtimg.cn/music/photo_new/T002R300x300M000${data.mid}.jpg?max_age=2592000`,
+    data.singername,
+    data.aDate
+ 	);
+ }

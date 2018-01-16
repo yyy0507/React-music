@@ -6,8 +6,11 @@ import Recommend from './recommend/Recommend';
 import Ranking from './ranking/Ranking';
 import Search from './search/Search';
 
+import Player from "../containers/Player";
+
 import logo from '../assets/imgs/logo.png';
 import '../assets/stylus/reset.styl';
+import '../assets/stylus/font.styl';
 import './App.styl';
 
 export default class App extends Component {
@@ -45,6 +48,7 @@ export default class App extends Component {
             <Route component={Recommend} />
           </Switch>
         </div>
+        <Player />
       </div>
     </Router>
     );

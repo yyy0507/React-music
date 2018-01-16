@@ -1,7 +1,7 @@
 import jsonp from "./jsonp";
 import {URL, PARAM, OPTION} from "./config";
 
-
+//Object.assign()函数是把对象进行合并，相同的属性值会被覆盖
 export function getCarousel() {
 	const data = Object.assign({}, PARAM, {
 		g_tk: 701075963,
@@ -28,4 +28,15 @@ export function getNewAlbum(){
 		prefix: "callback"
 	};
 	return jsonp(URL.newalbum, data, option);
+}
+
+export function getAlbumInfo(albumMid){
+	const data = Object.assign({},PARAM,{
+		albummid: albumMid,
+		g_tk: 1278911659,
+		hostUin: 0,
+		platform: "yqq",
+		needNewCode: 0
+	});
+	return jsonp(URL.albumInfo, data, OPTION);
 }
