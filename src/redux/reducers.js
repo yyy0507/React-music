@@ -5,24 +5,25 @@
 //2、执行有副作用的操作，如API请求和路由跳转
 //3、调用非纯函数，如Date.now()或Math.random()
 
-import {combineReducers} from "redux"
+import { combineReducers } from 'redux'
 import * as ActionTypes from "./actionTypes"
 
 /**
  * reducer就是一个纯函数，接收旧的state和action，返回新的state
  */
 
-//需要存储的初始状态数据
+ //需要存储的初始状态数据
 const initialState = {
-	showStatus: false, //显示状态
-	song: {}, //当前歌曲
-	songs: [] //歌曲列表哦
+	showStatus: false,  //显示状态
+	song: {},  //当前歌曲
+	songs: [],  //歌曲列表
 };
 
 //拆分Reducer
+
 //显示或隐藏播放状态
 function showStatus(showStatus = initialState.showStatus, action) {
-	switch (action.type){
+	switch (action.type) {
 		case ActionTypes.SHOW_PLAYER:
 			return action.showStatus;
 		default:
@@ -53,7 +54,7 @@ function songs(songs = initialState.songs, action) {
 }
 
 
-//合并Recucer
+//合并Reducer
 const reducer = combineReducers({
 	showStatus,
 	song,

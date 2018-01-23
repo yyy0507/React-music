@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import {CSSTransition} from "react-transition-group";
-import "./album.styl";
+
 
 import Header from "@/common/header/Header";
 import Scroll from "@/common/scroll/Scroll";
@@ -13,6 +13,8 @@ import {CODE_SUCCESS} from "@/api/config";
 
 import * as AlbumModel from "@/model/album";
 import * as SongModel from "@/model/song";
+
+import "./album.styl";
 
 export default class Album extends React.Component{
 	constructor(props){
@@ -80,11 +82,24 @@ export default class Album extends React.Component{
 	 *选择歌曲
 	 */
 	 selectSong(song) {
-	 	return (e) => {
+	 	return () => {
 	 		this.props.setSongs([song]);
 	 		this.props.changeCurrentSong(song);
+	 		this.props.showMusicPlayer(true);
 	 	};
 	 }
+
+	 /**
+	  *播放全部
+	  **/
+	  playAll = () => {
+	  	if(this.state.songs.length > 0) {
+	  		//添加播放歌曲列表
+	  		this.props.setSongs(this.state.songs);
+	  		this.props.changeCurrentSong(this.state.songs[0]);
+	  		this.props.showMusicPlayer(true);
+	  	};
+	  }
 
 	/**
 	 *监听scroll
@@ -100,11 +115,18 @@ export default class Album extends React.Component{
                 albumFixedBgDOM.style.display = "none";
             }
         } else {
-            let transform = `scale(${1 + y * 0.004}, ${1 + y * 0.004})`;
-            albumBgDOM.style["webkitTransform"] = transform;
-            albumBgDOM.style["transform"] = transform;
-            playButtonWrapperDOM.style.marginTop = `${y}px`;
-        }
+          if (y < 100) {
+						let transform = `scale(${1 + y * 0.01}, ${1 + y * 0.01})`;
+						albumBgDOM.style["webkitTransform"] = transform;
+						albumBgDOM.style["transform"] = transform;
+						playButtonWrapperDOM.style.marginTop = `${y}px`;
+					} else {
+						let transform = `scale(${1 + 10 * 0.01}, ${1 + 10 * 0.01})`;
+						albumBgDOM.style["webkitTransform"] = transform;
+						albumBgDOM.style["transform"] = transform;
+						playButtonWrapperDOM.style.marginTop = `100px`;
+				}
+			}
     }
 	render(){
 		let album = this.state.album;
@@ -117,6 +139,7 @@ export default class Album extends React.Component{
 			);
 		});
 		return (
+		
 		<CSSTransition in={this.state.show} timeout={300} classNames="translate">
 			<div className="music-album">
 				<Header title={album.name} ref="header"></Header>
@@ -128,7 +151,7 @@ export default class Album extends React.Component{
 						<div className="filter"></div>
 					</div>
 					<div className="play-wrapper" ref="playButtonWrapper">
-						<div className="play-button">
+						<div className="play-button" onClick={this.playAll}>
 							<i className="icon-play"></i>
 							<span>播放全部</span>
 						</div>
